@@ -17,7 +17,27 @@ const PORT = process.env.PORT || 5000;
 const isProd = process.env.NODE_ENV === 'production';
 
 // Security
-app.use(helmet({ contentSecurityPolicy: isProd ? undefined : false }));
+app.use(
+  helmet({
+    contentSecurityPolicy: isProd
+      ? {
+          directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", 'data:', 'https:'],
+            connectSrc: ["'self'"],
+            frameSrc: ["'self'", 'https://www.google.com', 'https://maps.google.com'],
+            objectSrc: ["'none'"],
+            baseUri: ["'self'"],
+            formAction: ["'self'"],
+            frameAncestors: ["'self'"],
+            upgradeInsecureRequests: []
+          }
+        }
+      : false
+  })
+);
 app.use(cors({
   origin: isProd ? false : ['http://localhost:5173', 'http://127.0.0.1:5173'],
   credentials: true
