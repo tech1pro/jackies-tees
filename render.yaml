@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: jackies-tees
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: npm install && cd server && npm install && cd ../client && npm install && cd .. && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
