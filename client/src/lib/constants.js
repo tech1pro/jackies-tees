@@ -3,7 +3,7 @@ export const BUSINESS = {
   address: '238 Rantoul Street, Beverly, MA 01915',
   phone: '(617) 799-8404',
   email: 'Info@JackiesTees.com',
-  hours: 'Monday–Wednesday and Friday 11am–4pm',
+  hours: 'Mon-Wed & Fri, 11am-4pm',
   owners: 'Rayshelle and Dante',
 };
 

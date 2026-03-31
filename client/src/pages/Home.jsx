@@ -13,8 +13,8 @@ export default function Home() {
   return (
     <>
       <Hero
-        headline="Custom Tees & Apparel in Beverly, MA"
-        subcopy="From one-off designs to bulk orders, school jerseys to wedding party tees — we make it easy. Walk-ins welcome, nationwide shipping available."
+        headline="Custom Apparel Made Easy in Beverly, MA"
+        subcopy="From one-off shirts to large event orders, we help you create clean, high-quality designs with fast turnaround and friendly local service."
       />
 
       <section className="py-16 container mx-auto px-4">
@@ -46,7 +46,7 @@ export default function Home() {
       <section className="py-16 container mx-auto px-4">
         <SectionHeader
           title="What People Say"
-          subtitle="Real reviews from our Beverly-area customers."
+          subtitle="Customer feedback from Beverly and surrounding communities."
         />
         <TestimonialCards limit={4} />
       </section>
@@ -55,7 +55,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <SectionHeader
             title="Find Us"
-            subtitle="Visit us on Rantoul Street in Beverly."
+            subtitle="Stop by our Rantoul Street location in Beverly."
           />
           <ContactCards />
           <p className="text-center text-gray-600 mt-4">Hours: {BUSINESS.hours}</p>
