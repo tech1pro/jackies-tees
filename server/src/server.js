@@ -74,12 +74,11 @@ if (isProd) {
 }
 
 initDb()
-  .then(() => {
+  .catch((err) => {
+    console.error('Failed to initialize database, continuing with fallback mode:', err);
+  })
+  .finally(() => {
     app.listen(PORT, () => {
       console.log(`Server listening on http://localhost:${PORT}`);
     });
-  })
-  .catch((err) => {
-    console.error('Failed to initialize database:', err);
-    process.exit(1);
   });

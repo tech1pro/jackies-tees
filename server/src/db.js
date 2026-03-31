@@ -75,6 +75,16 @@ export async function initDb() {
   `);
 }
 
+async function queryPostgres(sql, params) {
+  if (!pool) return null;
+  try {
+    return await pool.query(sql, params);
+  } catch (err) {
+    console.error('Postgres query failed, using file fallback:', err.message);
+    return null;
+  }
+}
+
 export async function getDbHealth() {
   if (!pool) {
     return { configured: false, healthy: true, mode: 'file-fallback' };
@@ -89,7 +99,7 @@ export async function getDbHealth() {
 
 export async function insertOrderRequest(itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone) {
   if (pool) {
-    const result = await pool.query(
+    const result = await queryPostgres(
       `
       INSERT INTO requests (
         request_type, item_type, quantity, colors, design_description,
@@ -100,7 +110,9 @@ export async function insertOrderRequest(itemType, quantity, colors, designDescr
       `,
       [itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone]
     );
-    return { lastInsertRowid: Number(result.rows[0].id) };
+    if (result?.rows?.[0]?.id) {
+      return { lastInsertRowid: Number(result.rows[0].id) };
+    }
   }
 
   ensureFile(ordersPath);
@@ -114,7 +126,7 @@ export async function insertOrderRequest(itemType, quantity, colors, designDescr
 
 export async function insertQuoteRequest(itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone) {
   if (pool) {
-    const result = await pool.query(
+    const result = await queryPostgres(
       `
       INSERT INTO requests (
         request_type, item_type, quantity, colors, design_description,
@@ -125,7 +137,9 @@ export async function insertQuoteRequest(itemType, quantity, colors, designDescr
       `,
       [itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone]
     );
-    return { lastInsertRowid: Number(result.rows[0].id) };
+    if (result?.rows?.[0]?.id) {
+      return { lastInsertRowid: Number(result.rows[0].id) };
+    }
   }
 
   ensureFile(quotesPath);
@@ -139,7 +153,7 @@ export async function insertQuoteRequest(itemType, quantity, colors, designDescr
 
 export async function getRecentOrderRequests(limit) {
   if (pool) {
-    const result = await pool.query(
+    const result = await queryPostgres(
       `
       SELECT
         id,
@@ -160,7 +174,7 @@ export async function getRecentOrderRequests(limit) {
       `,
       [limit]
     );
-    return result.rows;
+    if (result?.rows) return result.rows;
   }
 
   ensureFile(ordersPath);
@@ -172,7 +186,7 @@ export async function getRecentOrderRequests(limit) {
 
 export async function getRecentQuoteRequests(limit) {
   if (pool) {
-    const result = await pool.query(
+    const result = await queryPostgres(
       `
       SELECT
         id,
@@ -193,7 +207,7 @@ export async function getRecentQuoteRequests(limit) {
       `,
       [limit]
     );
-    return result.rows;
+    if (result?.rows) return result.rows;
   }
 
   ensureFile(quotesPath);
