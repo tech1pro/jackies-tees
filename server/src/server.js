@@ -22,17 +22,17 @@ app.use(
     contentSecurityPolicy: isProd
       ? {
           directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'"],
-            imgSrc: ["'self'", 'data:', 'https:'],
-            connectSrc: ["'self'"],
-            frameSrc: ["'self'", 'https://www.google.com', 'https://maps.google.com'],
-            objectSrc: ["'none'"],
-            baseUri: ["'self'"],
-            formAction: ["'self'"],
-            frameAncestors: ["'self'"],
-            upgradeInsecureRequests: []
+            "default-src": ["'self'"],
+            "script-src": ["'self'"],
+            "style-src": ["'self'", "'unsafe-inline'", 'https:'],
+            "img-src": ["'self'", 'data:', 'https:'],
+            "connect-src": ["'self'"],
+            "frame-src": ["'self'", 'https://www.google.com', 'https://maps.google.com'],
+            "object-src": ["'none'"],
+            "base-uri": ["'self'"],
+            "form-action": ["'self'"],
+            "frame-ancestors": ["'self'"],
+            "upgrade-insecure-requests": []
           }
         }
       : false
