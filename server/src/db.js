@@ -74,6 +74,18 @@ export async function initDb() {
   `);
 }
 
+export async function getDbHealth() {
+  if (!pool) {
+    return { configured: false, healthy: true, mode: 'file-fallback' };
+  }
+  try {
+    await pool.query('SELECT 1');
+    return { configured: true, healthy: true, mode: 'postgres' };
+  } catch {
+    return { configured: true, healthy: false, mode: 'postgres' };
+  }
+}
+
 export async function insertOrderRequest(itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone) {
   if (pool) {
     const result = await pool.query(

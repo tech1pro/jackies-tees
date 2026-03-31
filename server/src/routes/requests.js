@@ -3,6 +3,7 @@ import { orderRequestSchema, quoteRequestSchema } from '../validation.js';
 import { insertOrderRequest, insertQuoteRequest, getRecentOrderRequests, getRecentQuoteRequests } from '../db.js';
 
 const router = Router();
+const adminToken = process.env.ADMIN_TOKEN || '';
 
 function validateBody(schema) {
   return (req, res, next) => {
@@ -18,6 +19,17 @@ function validateBody(schema) {
       res.status(400).json({ success: false, message: 'Invalid request' });
     }
   };
+}
+
+function requireAdminToken(req, res, next) {
+  if (!adminToken) {
+    return res.status(503).json({ success: false, message: 'Admin access is not configured' });
+  }
+  const token = req.get('x-admin-token') || req.query.token;
+  if (token !== adminToken) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+  next();
 }
 
 router.post('/order', validateBody(orderRequestSchema), async (req, res) => {
@@ -70,7 +82,7 @@ router.post('/quote', validateBody(quoteRequestSchema), async (req, res) => {
   }
 });
 
-router.get('/recent', async (req, res) => {
+router.get('/recent', requireAdminToken, async (req, res) => {
   const type = req.query.type || 'all';
   const limit = Math.min(parseInt(req.query.limit || '50', 10) || 50, 100);
 

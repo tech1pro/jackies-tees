@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-import { initDb } from './db.js';
+import { initDb, getDbHealth } from './db.js';
 import requestsRouter from './routes/requests.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -58,8 +58,9 @@ app.use(morgan(isProd ? 'combined' : 'dev'));
 app.use(express.json({ limit: '32kb' }));
 
 // API routes
-app.get('/api/health', (_, res) => {
-  res.json({ ok: true, timestamp: new Date().toISOString() });
+app.get('/api/health', async (_, res) => {
+  const db = await getDbHealth();
+  res.json({ ok: db.healthy, timestamp: new Date().toISOString(), db });
 });
 app.use('/api/requests', requestsRouter);
 

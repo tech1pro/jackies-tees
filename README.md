@@ -5,14 +5,14 @@ Full-stack website for Jackie's Tees & Custom Apparel (Beverly, MA) — custom t
 ## Stack
 
 - **Client:** React (Vite) + React Router + Tailwind CSS
-- **Server:** Node.js (Express) + JSON file store (server/data/)
+- **Server:** Node.js (Express) + Postgres (`DATABASE_URL`) with JSON fallback (`server/data/`)
 - **Validation:** Zod
 - **Security:** Helmet, CORS, express-rate-limit
 
 ## Project Structure
 
 ```
-/server     Express API + SQLite
+/server     Express API + Postgres/JSON fallback
 /client     Vite + React + Tailwind
 ```
 
@@ -86,6 +86,7 @@ Set these on Render (Service -> Environment):
 
 - `DATABASE_URL` = your Postgres connection string
 - `DATABASE_SSL` = `true` for hosted providers like Supabase/Neon/Render Postgres
+- `ADMIN_TOKEN` = long random string used to protect admin submissions endpoint
 - `NODE_ENV` = `production`
 
 If `DATABASE_URL` is not set, the app falls back to local JSON files in `server/data/`.
@@ -99,7 +100,7 @@ If `DATABASE_URL` is not set, the app falls back to local JSON files in `server/
 
 ## API Endpoints
 
-- `GET /api/health` — Health check
+- `GET /api/health` — Health check (includes DB status)
 - `POST /api/requests/order` — Submit custom order request
 - `POST /api/requests/quote` — Submit quote request
-- `GET /api/requests/recent?type=order|quote|all&limit=50` — List recent submissions (admin)
+- `GET /api/requests/recent?type=order|quote|all&limit=50` — List recent submissions (admin token required)

@@ -58,22 +58,85 @@ export default function AdminSubmissions() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [savedToken, setSavedToken] = useState(() => localStorage.getItem('adminToken') || '');
+  const [tokenInput, setTokenInput] = useState(() => localStorage.getItem('adminToken') || '');
 
   useEffect(() => {
+    if (!savedToken) {
+      setLoading(false);
+      setData(null);
+      setError(null);
+      return;
+    }
+
     setLoading(true);
-    fetch(`${API_BASE}/api/requests/recent?type=${type}&limit=50`)
-      .then((res) => res.json())
+    setError(null);
+    fetch(`${API_BASE}/api/requests/recent?type=${type}&limit=50`, {
+      headers: { 'x-admin-token': savedToken }
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((json) => {
+            throw new Error(json.message || 'Failed to load');
+          });
+        }
+        return res.json();
+      })
       .then((json) => {
         if (json.success) setData(json);
         else setError(json.message || 'Failed to load');
       })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [type]);
+  }, [type, savedToken]);
+
+  function saveTokenAndLoad() {
+    const trimmed = tokenInput.trim();
+    if (!trimmed) return;
+    localStorage.setItem('adminToken', trimmed);
+    setSavedToken(trimmed);
+  }
+
+  function clearToken() {
+    localStorage.removeItem('adminToken');
+    setSavedToken('');
+    setTokenInput('');
+    setData(null);
+    setError(null);
+  }
 
   return (
     <section className="py-16 container mx-auto px-4">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Recent Submissions</h1>
+      <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+        <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="admin-token">
+          Admin Access Token
+        </label>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input
+            id="admin-token"
+            type="password"
+            value={tokenInput}
+            onChange={(e) => setTokenInput(e.target.value)}
+            placeholder="Enter ADMIN_TOKEN"
+            className="flex-1 rounded-lg border border-gray-300 px-3 py-2"
+          />
+          <button
+            type="button"
+            onClick={saveTokenAndLoad}
+            className="px-4 py-2 rounded-lg bg-hot-pink text-white font-semibold"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={clearToken}
+            className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
       <div className="flex gap-2 mb-6">
         {['all', 'order', 'quote'].map((t) => (
           <button
@@ -89,10 +152,11 @@ export default function AdminSubmissions() {
         ))}
       </div>
 
-      {loading && <p className="text-gray-500">Loading...</p>}
+      {!savedToken && <p className="text-gray-500">Enter the admin token to view submissions.</p>}
+      {loading && savedToken && <p className="text-gray-500">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      {!loading && !error && data && (
+      {!loading && savedToken && !error && data && (
         <div className="space-y-8">
           {(type === 'all' || type === 'order') && (
             <div>
