@@ -11,6 +11,7 @@ const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
 const pool = hasDatabaseUrl
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
+      family: Number(process.env.DATABASE_FAMILY || 4),
       ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined
     })
   : null;
