@@ -1,10 +1,19 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import pg from 'pg';
 import { getDataDir } from './utils.js';
 
 const dataDir = getDataDir();
 const ordersPath = join(dataDir, 'orders.json');
 const quotesPath = join(dataDir, 'quotes.json');
+const { Pool } = pg;
+const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
+const pool = hasDatabaseUrl
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+    })
+  : null;
 
 function readJson(path, defaultVal) {
   if (!existsSync(path)) return defaultVal;
@@ -45,7 +54,42 @@ function row(itemType, quantity, colors, designDescription, eventDeadline, fulfi
   };
 }
 
-export function insertOrderRequest(itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone) {
+export async function initDb() {
+  if (!pool) return;
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS requests (
+      id BIGSERIAL PRIMARY KEY,
+      request_type TEXT NOT NULL CHECK (request_type IN ('order', 'quote')),
+      item_type TEXT NOT NULL,
+      quantity INTEGER NOT NULL,
+      colors TEXT NOT NULL,
+      design_description TEXT NOT NULL,
+      event_deadline TEXT,
+      fulfillment TEXT NOT NULL,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+}
+
+export async function insertOrderRequest(itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone) {
+  if (pool) {
+    const result = await pool.query(
+      `
+      INSERT INTO requests (
+        request_type, item_type, quantity, colors, design_description,
+        event_deadline, fulfillment, name, email, phone
+      )
+      VALUES ('order', $1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id;
+      `,
+      [itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone]
+    );
+    return { lastInsertRowid: Number(result.rows[0].id) };
+  }
+
   ensureFile(ordersPath);
   const orders = readJson(ordersPath, []);
   const id = nextId(orders);
@@ -55,7 +99,22 @@ export function insertOrderRequest(itemType, quantity, colors, designDescription
   return { lastInsertRowid: id };
 }
 
-export function insertQuoteRequest(itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone) {
+export async function insertQuoteRequest(itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone) {
+  if (pool) {
+    const result = await pool.query(
+      `
+      INSERT INTO requests (
+        request_type, item_type, quantity, colors, design_description,
+        event_deadline, fulfillment, name, email, phone
+      )
+      VALUES ('quote', $1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id;
+      `,
+      [itemType, quantity, colors, designDescription, eventDeadline, fulfillment, name, email, phone]
+    );
+    return { lastInsertRowid: Number(result.rows[0].id) };
+  }
+
   ensureFile(quotesPath);
   const quotes = readJson(quotesPath, []);
   const id = nextId(quotes);
@@ -65,7 +124,32 @@ export function insertQuoteRequest(itemType, quantity, colors, designDescription
   return { lastInsertRowid: id };
 }
 
-export function getRecentOrderRequests(limit) {
+export async function getRecentOrderRequests(limit) {
+  if (pool) {
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        item_type,
+        quantity,
+        colors,
+        design_description,
+        event_deadline,
+        fulfillment,
+        name,
+        email,
+        phone,
+        TO_CHAR(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') AS created_at
+      FROM requests
+      WHERE request_type = 'order'
+      ORDER BY created_at DESC
+      LIMIT $1;
+      `,
+      [limit]
+    );
+    return result.rows;
+  }
+
   ensureFile(ordersPath);
   const orders = readJson(ordersPath, []);
   return [...orders]
@@ -73,7 +157,32 @@ export function getRecentOrderRequests(limit) {
     .slice(0, limit);
 }
 
-export function getRecentQuoteRequests(limit) {
+export async function getRecentQuoteRequests(limit) {
+  if (pool) {
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        item_type,
+        quantity,
+        colors,
+        design_description,
+        event_deadline,
+        fulfillment,
+        name,
+        email,
+        phone,
+        TO_CHAR(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS') AS created_at
+      FROM requests
+      WHERE request_type = 'quote'
+      ORDER BY created_at DESC
+      LIMIT $1;
+      `,
+      [limit]
+    );
+    return result.rows;
+  }
+
   ensureFile(quotesPath);
   const quotes = readJson(quotesPath, []);
   return [...quotes]

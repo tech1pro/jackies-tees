@@ -76,6 +76,27 @@ Notes:
 - Free instances on Render sleep after inactivity and wake on first request.
 - Data is stored in `server/data/` on the instance filesystem, so free-hosted data is not durable across rebuilds/redeploys.
 
+## Persistent Database (Recommended)
+
+The server now supports Postgres for durable submissions.
+
+### Environment variables
+
+Set these on Render (Service -> Environment):
+
+- `DATABASE_URL` = your Postgres connection string
+- `DATABASE_SSL` = `true` for hosted providers like Supabase/Neon/Render Postgres
+- `NODE_ENV` = `production`
+
+If `DATABASE_URL` is not set, the app falls back to local JSON files in `server/data/`.
+
+### Supabase quick start
+
+1. Create a Supabase project.
+2. In Supabase, copy the Transaction/Session pooler Postgres URL.
+3. In Render, add `DATABASE_URL` and `DATABASE_SSL=true`.
+4. Redeploy. The app auto-creates its `requests` table on startup.
+
 ## API Endpoints
 
 - `GET /api/health` — Health check

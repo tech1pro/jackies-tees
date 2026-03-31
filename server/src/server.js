@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import { initDb } from './db.js';
 import requestsRouter from './routes/requests.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -51,6 +52,13 @@ if (isProd) {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
-});
+initDb()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server listening on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to initialize database:', err);
+    process.exit(1);
+  });

@@ -20,10 +20,10 @@ function validateBody(schema) {
   };
 }
 
-router.post('/order', validateBody(orderRequestSchema), (req, res) => {
+router.post('/order', validateBody(orderRequestSchema), async (req, res) => {
   const d = req.validated;
   try {
-    const info = insertOrderRequest(
+    const info = await insertOrderRequest(
       d.itemType,
       d.quantity,
       d.colors.trim().slice(0, 200),
@@ -45,10 +45,10 @@ router.post('/order', validateBody(orderRequestSchema), (req, res) => {
   }
 });
 
-router.post('/quote', validateBody(quoteRequestSchema), (req, res) => {
+router.post('/quote', validateBody(quoteRequestSchema), async (req, res) => {
   const d = req.validated;
   try {
-    const info = insertQuoteRequest(
+    const info = await insertQuoteRequest(
       d.itemType,
       d.quantity,
       d.colors.trim().slice(0, 200),
@@ -70,21 +70,21 @@ router.post('/quote', validateBody(quoteRequestSchema), (req, res) => {
   }
 });
 
-router.get('/recent', (req, res) => {
+router.get('/recent', async (req, res) => {
   const type = req.query.type || 'all';
   const limit = Math.min(parseInt(req.query.limit || '50', 10) || 50, 100);
 
   try {
     if (type === 'order') {
-      const rows = getRecentOrderRequests(limit);
+      const rows = await getRecentOrderRequests(limit);
       return res.json({ success: true, type: 'order', data: rows });
     }
     if (type === 'quote') {
-      const rows = getRecentQuoteRequests(limit);
+      const rows = await getRecentQuoteRequests(limit);
       return res.json({ success: true, type: 'quote', data: rows });
     }
-    const orders = getRecentOrderRequests(limit);
-    const quotes = getRecentQuoteRequests(limit);
+    const orders = await getRecentOrderRequests(limit);
+    const quotes = await getRecentQuoteRequests(limit);
     return res.json({
       success: true,
       type: 'all',
