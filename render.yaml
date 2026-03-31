@@ -4,8 +4,8 @@ services:
     runtime: node
     plan: free
     rootDir: .
-    buildCommand: npm install && cd server && npm install && cd ../client && npm install && cd .. && npm run build
-    startCommand: npm start
+    buildCommand: npm install --include=dev && cd server && npm install --include=dev && cd ../client && npm install --include=dev && cd .. && npm run build
+    startCommand: cd server && npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
