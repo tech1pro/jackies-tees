@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { ITEM_TYPES } from '../lib/constants';
 
-export default function OrderForm({ onSubmit, submitLabel = 'Submit Order Request', isQuote = false }) {
+export default function OrderForm({
+  onSubmit,
+  submitLabel = 'Submit Order Request',
+  isQuote = false,
+  initialValues = {},
+}) {
   const [form, setForm] = useState({
-    itemType: '',
+    itemType: initialValues.itemType || '',
     quantity: '',
     colors: '',
-    designDescription: '',
+    designDescription: initialValues.designDescription || '',
     eventDeadline: '',
     fulfillment: 'pickup',
     name: '',

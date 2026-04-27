@@ -1,11 +1,21 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import SectionHeader from '../components/SectionHeader';
 import OrderForm from '../components/OrderForm';
+import { ITEM_TYPES } from '../lib/constants';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '';
 
 export default function OrderRequest() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const requestedItemType = searchParams.get('itemType');
+  const requestedInterest = searchParams.get('interest');
+  const initialItemType = ITEM_TYPES.some((item) => item.value === requestedItemType)
+    ? requestedItemType
+    : '';
+  const initialDesignDescription = requestedInterest
+    ? `I'm interested in ${requestedInterest}.`
+    : '';
 
   const handleSubmit = async (data) => {
     const res = await fetch(`${API_BASE}/api/requests/order`, {
@@ -37,6 +47,10 @@ export default function OrderRequest() {
         onSubmit={handleSubmit}
         submitLabel="Submit Order Request"
         isQuote={false}
+        initialValues={{
+          itemType: initialItemType,
+          designDescription: initialDesignDescription,
+        }}
       />
     </section>
   );
