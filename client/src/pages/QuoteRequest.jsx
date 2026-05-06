@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import SectionHeader from '../components/SectionHeader';
 import OrderForm from '../components/OrderForm';
+import PageMeta from '../components/PageMeta';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '';
 
@@ -29,10 +30,18 @@ export default function QuoteRequest() {
 
   return (
     <section className="py-16 container mx-auto px-4">
+      <PageMeta
+        title="Get a Free Quote | Jackie's Tees"
+        description="Share your custom apparel project for a free, no-obligation quote from Jackie's Tees in Beverly, MA. We handle tees, sweatshirts, teams, businesses, rhinestones, embroidery, and more."
+      />
       <SectionHeader
         title="Get a Free Quote"
+        titleAs="h1"
         subtitle="Share your project details and we'll send you a quote — no obligation."
       />
+      <p className="max-w-2xl mx-auto text-gray-700 text-lg text-center mb-10">
+        Not sure yet on quantities or timelines? Submit what you know — design ideas, garment type, deadline, pickup versus shipping — and we'll reply with pricing and next steps tailored to your order.
+      </p>
       <OrderForm
         onSubmit={handleSubmit}
         submitLabel="Request Free Quote"

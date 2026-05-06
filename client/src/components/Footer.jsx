@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { BUSINESS } from '../lib/constants';
+import BusinessHours from './BusinessHours';
 
 export default function Footer() {
   return (
@@ -19,7 +20,8 @@ export default function Footer() {
                 {BUSINESS.email}
               </a>
             </p>
-            <p className="text-sm mt-2">Hours: {BUSINESS.hours}</p>
+            <p className="text-sm mt-4 font-semibold text-white">Hours</p>
+            <BusinessHours className="text-gray-300" listClassName="mt-1 space-y-0.5 text-sm list-none p-0" />
           </div>
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Quick Links</h3>

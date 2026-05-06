@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BUSINESS } from '../lib/constants';
 
 const faqs = [
   {
@@ -11,7 +12,8 @@ const faqs = [
   },
   {
     q: 'How do I submit my artwork?',
-    a: 'You can email your design to Info@JackiesTees.com, bring a file on a USB when you visit, or create your design at our in-store design station. We’ll review and confirm before printing.',
+    getA: () =>
+      `You can email your design to ${BUSINESS.email}, bring a file on a USB when you visit, or create your design at our in-store design station. We’ll review and confirm before printing.`,
   },
   {
     q: 'What file formats do you accept?',
@@ -58,7 +60,7 @@ export default function FAQAccordion() {
             aria-labelledby={`faq-question-${i}`}
             className={`overflow-hidden transition-all ${open === i ? 'max-h-96' : 'max-h-0'}`}
           >
-            <div className="px-6 pb-4 text-gray-600">{faq.a}</div>
+            <div className="px-6 pb-4 text-gray-600">{faq.getA ? faq.getA() : faq.a}</div>
           </div>
         </div>
       ))}

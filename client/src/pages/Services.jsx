@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import SectionHeader from '../components/SectionHeader';
 import CTASection from '../components/CTASection';
+import PageMeta from '../components/PageMeta';
 
 const services = [
   {
@@ -62,11 +63,19 @@ const services = [
 export default function Services() {
   return (
     <>
+      <PageMeta
+        title="Custom Apparel Services | Jackie's Tees"
+        description="Screen printing, heat transfer, DTG, embroidery, rhinestone totes, school and team orders, events, and walk-in design — custom apparel services from Jackie's Tees in Beverly, MA."
+      />
       <section className="py-16 container mx-auto px-4">
         <SectionHeader
           title="Our Services & Products"
+          titleAs="h1"
           subtitle="From custom tees to corporate apparel — we've got you covered."
         />
+        <p className="max-w-2xl mx-auto text-gray-700 text-lg text-center mb-12">
+          Explore how we help with one-off shirts, bulk team and business orders, sweatshirts and jackets, event merch, and sparkly rhinestone lettering — with local pickup or shipping when your order is ready.
+        </p>
         <div className="space-y-8 max-w-3xl mx-auto">
           {services.map((s) => (
             <div

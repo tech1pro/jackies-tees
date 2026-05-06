@@ -7,11 +7,17 @@ import GalleryGrid from '../components/GalleryGrid';
 import CTASection from '../components/CTASection';
 import FAQAccordion from '../components/FAQAccordion';
 import ContactCards from '../components/ContactCards';
+import PageMeta from '../components/PageMeta';
+import BusinessHours from '../components/BusinessHours';
 import { BUSINESS } from '../lib/constants';
 
 export default function Home() {
   return (
     <>
+      <PageMeta
+        title="Custom T-Shirts & Apparel in Beverly, MA | Jackie's Tees"
+        description="Order custom tees, screen printing, embroidery, rhinestones, team gear, and more at Jackie's Tees on Rantoul Street. Walk-ins welcome; local pickup and nationwide shipping."
+      />
       <Hero
         headline="Custom Apparel Made Easy in Beverly, MA"
         subcopy="From one-off shirts to large event orders, we help you create clean, high-quality designs with fast turnaround and friendly local service."
@@ -58,7 +64,10 @@ export default function Home() {
             subtitle="Stop by our Rantoul Street location in Beverly."
           />
           <ContactCards />
-          <p className="text-center text-gray-600 mt-4">Hours: {BUSINESS.hours}</p>
+          <div className="text-center mt-6">
+            <p className="text-gray-700 font-semibold">Hours</p>
+            <BusinessHours className="text-gray-600" listClassName="mt-2 space-y-1 text-sm list-none inline-block text-left mx-auto" />
+          </div>
           <div className="text-center mt-4">
             <a
               href={`https://maps.google.com/?q=${encodeURIComponent(BUSINESS.address)}`}

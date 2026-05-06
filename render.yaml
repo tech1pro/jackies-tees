@@ -1,4 +1,6 @@
 services:
+  # Web app: push to GitHub → Render auto-builds (Blueprint) or trigger Manual Deploy.
+  # Client canonical/OG URLs: Vite uses RENDER_EXTERNAL_URL at build — no extra env for default Render URLs.
   - type: web
     name: jackies-tees
     runtime: node

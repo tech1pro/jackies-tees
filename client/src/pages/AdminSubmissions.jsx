@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PageMeta from '../components/PageMeta';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '';
 
@@ -107,6 +108,11 @@ export default function AdminSubmissions() {
 
   return (
     <section className="py-16 container mx-auto px-4">
+      <PageMeta
+        title="Submissions | Jackie's Tees Admin"
+        description="Administrative view for recent order and quote submissions."
+        robots="noindex, nofollow"
+      />
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Recent Submissions</h1>
       <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
         <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="admin-token">

@@ -62,7 +62,11 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
-            <div className="flex flex-col md:flex-row gap-2 p-4 md:p-0 md:ml-4">
+            <div
+              className="cta-group flex flex-col md:flex-row flex-wrap gap-3 p-4 md:p-0 md:ml-4"
+              role="group"
+              aria-label="Start an order or request a quote"
+            >
               <Link
                 to="/request-order"
                 className="px-4 py-2 bg-hot-pink text-white rounded-lg font-semibold hover:bg-pink-600 transition-colors text-center"

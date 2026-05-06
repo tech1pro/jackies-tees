@@ -5,7 +5,11 @@ export default function CTASection({ primaryText = 'Request a Custom Order', sec
     <section className="py-12 bg-gradient-to-r from-hot-pink to-electric-blue rounded-2xl my-12">
       <div className="container mx-auto px-4 text-center text-white">
         <h2 className="text-2xl md:text-3xl font-bold mb-6">Ready to get started?</h2>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div
+          className="cta-group flex flex-col sm:flex-row flex-wrap gap-4 justify-center"
+          role="group"
+          aria-label="Start an order or request a quote"
+        >
           <Link
             to="/request-order"
             className="px-6 py-3 bg-white text-hot-pink rounded-lg font-bold hover:bg-gray-100 transition-colors"

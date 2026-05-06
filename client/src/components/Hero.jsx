@@ -10,7 +10,11 @@ export default function Hero({ headline, subcopy }) {
         <p className="text-xl md:text-2xl text-gray-700 max-w-2xl mx-auto mb-10">
           {subcopy}
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div
+          className="cta-group flex flex-col sm:flex-row gap-4 justify-center"
+          role="group"
+          aria-label="Start an order or request a quote"
+        >
           <Link
             to="/request-order"
             className="px-8 py-4 bg-hot-pink text-white rounded-xl font-bold text-lg hover:bg-pink-600 transition-all shadow-lg hover:shadow-xl"

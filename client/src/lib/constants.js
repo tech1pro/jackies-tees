@@ -2,8 +2,17 @@ export const BUSINESS = {
   name: "Jackie's Tees & Custom Apparel",
   address: '238 Rantoul Street, Beverly, MA 01915',
   phone: '(617) 799-8404',
-  email: 'Info@JackiesTees.com',
-  hours: 'Mon-Wed & Fri, 11am-4pm',
+  email: 'info@jackiestees.com',
+  /** Explicit weekly hours — keep in sync across Footer, Contact, and About. */
+  hoursLines: [
+    'Monday: 11am to 4pm',
+    'Tuesday: 11am to 4pm',
+    'Wednesday: 11am to 4pm',
+    'Thursday: Closed',
+    'Friday: 11am to 4pm',
+    'Saturday: Closed or by appointment',
+    'Sunday: Closed',
+  ],
   owners: 'Rayshelle and Dante',
 };
 

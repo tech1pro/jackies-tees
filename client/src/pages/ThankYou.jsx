@@ -1,6 +1,7 @@
 import { useLocation, Link } from 'react-router-dom';
 import SectionHeader from '../components/SectionHeader';
-import { ITEM_TYPES } from '../lib/constants';
+import PageMeta from '../components/PageMeta';
+import { ITEM_TYPES, BUSINESS } from '../lib/constants';
 
 export default function ThankYou() {
   const { state } = useLocation();
@@ -12,14 +13,23 @@ export default function ThankYou() {
     ? ITEM_TYPES.find((t) => t.value === data.itemType)?.label || data.itemType
     : 'N/A';
 
+  const pageTitle =
+    type === 'quote' ? "Quote Request Received | Jackie's Tees" : "Order Request Received | Jackie's Tees";
+  const pageDescription =
+    type === 'quote'
+      ? "Thanks — your quote request was submitted to Jackie's Tees. We will follow up shortly with pricing and details."
+      : "Thanks — your custom order request was submitted to Jackie's Tees in Beverly, MA. Our team will be in touch soon.";
+
   return (
     <section className="py-16 container mx-auto px-4">
+      <PageMeta title={pageTitle} description={pageDescription} robots="noindex, nofollow" />
       <div className="max-w-xl mx-auto text-center">
         <div className="mb-8">
           <span className="text-6xl">🎉</span>
         </div>
         <SectionHeader
           title={type === 'quote' ? 'Quote Request Received!' : 'Order Request Received!'}
+          titleAs="h1"
           subtitle={
             type === 'quote'
               ? "We'll review your request and send you a quote soon."
@@ -43,9 +53,9 @@ export default function ThankYou() {
           </div>
         )}
         <p className="text-gray-600 mb-6">
-          Questions? Call us at (617) 799-8404 or email Info@JackiesTees.com.
+          Questions? Call us at {BUSINESS.phone} or email {BUSINESS.email}.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="cta-group flex flex-col sm:flex-row flex-wrap gap-4 justify-center" role="group" aria-label="Continue browsing">
           <Link
             to="/"
             className="px-6 py-3 bg-hot-pink text-white rounded-lg font-semibold hover:bg-pink-600 transition-colors"
